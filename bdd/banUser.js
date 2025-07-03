@@ -10,29 +10,35 @@ function loadBanUserData() {
     const data = fs.readFileSync(filePath, 'utf8');
     return JSON.parse(data);
   } catch (err) {
-    return {}; // Default if file doesn't exist
+    console.error("❌ [DE UNKNOWN] Error loading banUser.json:", err);
+    return {};
   }
 }
 
 // Save data to JSON file
 function saveBanUserData(data) {
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  } catch (err) {
+    console.error("❌ [DE UNKNOWN] Error saving banUser.json:", err);
+  }
 }
 
 // Create default file if it doesn't exist
 if (!fs.existsSync(filePath)) {
   saveBanUserData({});
+  console.log("✅ [DE UNKNOWN] banUser.json initialized.");
 }
 
 // Function to add a user to the ban list
 async function addUserToBanList(jid) {
   try {
     const data = loadBanUserData();
-    data[jid] = true; // Add the user to the ban list
+    data[jid] = true;
     saveBanUserData(data);
-    console.log(`JID ${jid} added to the banned user list.`);
+    console.log(`🚫 [DE UNKNOWN] JID ${jid} added to banned user list.`);
   } catch (error) {
-    console.error("Error while adding the banned user:", error);
+    console.error("❌ [DE UNKNOWN] Error adding user to ban list:", error);
   }
 }
 
@@ -40,9 +46,9 @@ async function addUserToBanList(jid) {
 async function isUserBanned(jid) {
   try {
     const data = loadBanUserData();
-    return data.hasOwnProperty(jid); // Check if the user is banned
+    return data.hasOwnProperty(jid);
   } catch (error) {
-    console.error("Error while checking if the user is banned:", error);
+    console.error("❌ [DE UNKNOWN] Error checking ban status:", error);
     return false;
   }
 }
@@ -52,14 +58,14 @@ async function removeUserFromBanList(jid) {
   try {
     const data = loadBanUserData();
     if (data.hasOwnProperty(jid)) {
-      delete data[jid]; // Remove the user from the ban list
+      delete data[jid];
       saveBanUserData(data);
-      console.log(`JID ${jid} removed from the banned user list.`);
+      console.log(`✅ [DE UNKNOWN] JID ${jid} removed from banned user list.`);
     } else {
-      console.log(`JID ${jid} is not in the banned user list.`);
+      console.log(`⚠️ [DE UNKNOWN] JID ${jid} not found in banned user list.`);
     }
   } catch (error) {
-    console.error("Error while removing the banned user:", error);
+    console.error("❌ [DE UNKNOWN] Error removing user from ban list:", error);
   }
 }
 
