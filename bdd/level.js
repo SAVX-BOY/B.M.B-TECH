@@ -24,12 +24,11 @@ if (!fs.existsSync(filePath)) {
   saveUserData({});
 }
 
-// Function to add or update user data
-async function ajouterOuMettreAJourUserData(jid) {
+// Function to add or update user data (increase XP and message count)
+async function addOrUpdateUserData(jid) {
   try {
     const data = loadUserData();
 
-    // Check if the JID exists and update or add
     if (data[jid]) {
       data[jid].xp += 10;
       data[jid].messages += 1;
@@ -48,7 +47,6 @@ async function getMessagesAndXPByJID(jid) {
   try {
     const data = loadUserData();
 
-    // Return user data if JID exists, otherwise default values
     if (data[jid]) {
       return { messages: data[jid].messages, xp: data[jid].xp };
     } else {
@@ -56,30 +54,29 @@ async function getMessagesAndXPByJID(jid) {
     }
   } catch (error) {
     console.error("Error retrieving user data:", error);
-    return { messages: 0, xp: 0 }; // Default values in case of error
+    return { messages: 0, xp: 0 };
   }
 }
 
-// Function to get the bottom 10 users by XP
-async function getBottom10Users() {
+// Function to get top 10 users by XP
+async function getTop10Users() {
   try {
     const data = loadUserData();
 
-    // Convert data to an array of objects and sort by XP in ascending order
     const sortedUsers = Object.keys(data)
       .map(jid => ({ jid, xp: data[jid].xp, messages: data[jid].messages }))
-      .sort((a, b) => b.xp - a.xp)
-      .slice(0, 10); // Get top 10 users
+      .sort((a, b) => b.xp - a.xp) // descending order, top XP first
+      .slice(0, 10);
 
     return sortedUsers;
   } catch (error) {
-    console.error("Error retrieving bottom 10 users:", error);
-    return []; // Return an empty array in case of error
+    console.error("Error retrieving top 10 users:", error);
+    return [];
   }
 }
 
 module.exports = {
-  ajouterOuMettreAJourUserData,
+  addOrUpdateUserData,
   getMessagesAndXPByJID,
-  getBottom10Users,
+  getTop10Users,
 };
