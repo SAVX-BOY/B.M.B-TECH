@@ -8,23 +8,30 @@ function loadAntilienData() {
     const data = fs.readFileSync(filePath, 'utf8');
     return JSON.parse(data);
   } catch (err) {
-    return {}; // If file doesn't exist, start with an empty object
+    console.error("❌ [DE UNKNOWN] Could not load antilien data:", err);
+    return {};
   }
 }
 
 // Save data to JSON file
 function saveAntilienData(data) {
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  } catch (err) {
+    console.error("❌ [DE UNKNOWN] Could not save antilien data:", err);
+  }
 }
 
 const antilienData = loadAntilienData();
 
+// Add or update a JID's link-blocking status
 async function ajouterOuMettreAJourJid(jid, etat) {
   antilienData[jid] = { etat, action: antilienData[jid]?.action || 'supp' };
   saveAntilienData(antilienData);
-  console.log(`JID ${jid} added or updated in the 'antilien' table.`);
+  console.log(`✅ [DE UNKNOWN] JID ${jid} updated with state '${etat}' in antilien.`);
 }
 
+// Update the action type for a JID
 async function mettreAJourAction(jid, action) {
   if (antilienData[jid]) {
     antilienData[jid].action = action;
@@ -32,13 +39,15 @@ async function mettreAJourAction(jid, action) {
     antilienData[jid] = { etat: 'non', action };
   }
   saveAntilienData(antilienData);
-  console.log(`Action updated for JID ${jid} in the 'antilien' table.`);
+  console.log(`✅ [DE UNKNOWN] Action '${action}' updated for JID ${jid}.`);
 }
 
+// Check if anti-link is enabled
 async function verifierEtatJid(jid) {
   return antilienData[jid]?.etat === 'oui';
 }
 
+// Get the action assigned to a JID
 async function recupererActionJid(jid) {
   return antilienData[jid]?.action || 'supp';
 }
