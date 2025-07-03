@@ -10,29 +10,35 @@ function loadBanGroupData() {
     const data = fs.readFileSync(filePath, 'utf8');
     return JSON.parse(data);
   } catch (err) {
-    return {}; // Default if file doesn't exist
+    console.error("❌ [DE UNKNOWN] Error loading banned group data:", err);
+    return {};
   }
 }
 
 // Save data to JSON file
 function saveBanGroupData(data) {
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  } catch (err) {
+    console.error("❌ [DE UNKNOWN] Error saving banned group data:", err);
+  }
 }
 
 // Create default file if it doesn't exist
 if (!fs.existsSync(filePath)) {
   saveBanGroupData({});
+  console.log("✅ [DE UNKNOWN] banGroup.json initialized.");
 }
 
 // Function to add a group to the ban list
 async function addGroupToBanList(groupeJid) {
   try {
     const data = loadBanGroupData();
-    data[groupeJid] = true; // Add the group to the ban list
+    data[groupeJid] = true;
     saveBanGroupData(data);
-    console.log(`Group JID ${groupeJid} added to the banned list.`);
+    console.log(`🚫 [DE UNKNOWN] Group JID ${groupeJid} added to ban list.`);
   } catch (error) {
-    console.error("Error while adding the banned group:", error);
+    console.error("❌ [DE UNKNOWN] Error adding group to ban list:", error);
   }
 }
 
@@ -40,9 +46,9 @@ async function addGroupToBanList(groupeJid) {
 async function isGroupBanned(groupeJid) {
   try {
     const data = loadBanGroupData();
-    return data.hasOwnProperty(groupeJid); // Check if the group is banned
+    return data.hasOwnProperty(groupeJid);
   } catch (error) {
-    console.error("Error while checking if the group is banned:", error);
+    console.error("❌ [DE UNKNOWN] Error checking group ban status:", error);
     return false;
   }
 }
@@ -52,14 +58,14 @@ async function removeGroupFromBanList(groupeJid) {
   try {
     const data = loadBanGroupData();
     if (data.hasOwnProperty(groupeJid)) {
-      delete data[groupeJid]; // Remove the group from the ban list
+      delete data[groupeJid];
       saveBanGroupData(data);
-      console.log(`Group JID ${groupeJid} removed from the banned list.`);
+      console.log(`✅ [DE UNKNOWN] Group JID ${groupeJid} removed from ban list.`);
     } else {
-      console.log(`Group JID ${groupeJid} is not in the banned list.`);
+      console.log(`⚠️ [DE UNKNOWN] Group JID ${groupeJid} not found in ban list.`);
     }
   } catch (error) {
-    console.error("Error while removing the banned group:", error);
+    console.error("❌ [DE UNKNOWN] Error removing group from ban list:", error);
   }
 }
 
