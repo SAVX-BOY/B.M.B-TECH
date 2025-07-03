@@ -1,11 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 
-// Path to the JSON file storing hentai data
-const filePath = path.join(__dirname, '../xmd/hentai.json');
+// Path to the JSON file storing unknown group data
+const filePath = path.join(__dirname, '../xmd/unknownGroups.json');
 
 // Load data from JSON file
-function loadHentaiData() {
+function loadUnknownGroupsData() {
   try {
     const data = fs.readFileSync(filePath, 'utf8');
     return JSON.parse(data);
@@ -15,63 +15,62 @@ function loadHentaiData() {
 }
 
 // Save data to JSON file
-function saveHentaiData(data) {
+function saveUnknownGroupsData(data) {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 }
 
 // Create default file if it doesn't exist
 if (!fs.existsSync(filePath)) {
-  saveHentaiData({});
+  saveUnknownGroupsData({});
 }
 
-// Function to add a group to the hentai list
-async function addToHentaiList(groupeJid) {
+// Function to add a group to the unknown groups list
+async function addToUnknownGroupsList(groupJid) {
   try {
-    const data = loadHentaiData();
+    const data = loadUnknownGroupsData();
     
-    // Add the group if it doesn't already exist
-    if (!data[groupeJid]) {
-      data[groupeJid] = true;
-      saveHentaiData(data);
-      console.log(`Group JID ${groupeJid} has been added to the hentai list.`);
+    if (!data[groupJid]) {
+      data[groupJid] = true;
+      saveUnknownGroupsData(data);
+      console.log(`Group JID ${groupJid} has been added to the unknown groups list.`);
     } else {
-      console.log(`Group JID ${groupeJid} is already in the hentai list.`);
+      console.log(`Group JID ${groupJid} is already in the unknown groups list.`);
     }
   } catch (error) {
-    console.error("Error while adding the group to the hentai list:", error);
+    console.error("Error while adding the group to the unknown groups list:", error);
   }
 }
 
-// Function to check if a group is in the hentai list
-async function checkFromHentaiList(groupeJid) {
+// Function to check if a group is in the unknown groups list
+async function checkFromUnknownGroupsList(groupJid) {
   try {
-    const data = loadHentaiData();
-    return !!data[groupeJid];
+    const data = loadUnknownGroupsData();
+    return !!data[groupJid];
   } catch (error) {
-    console.error("Error while checking the group's presence in the hentai list:", error);
+    console.error("Error while checking the group's presence in the unknown groups list:", error);
     return false;
   }
 }
 
-// Function to remove a group from the hentai list
-async function removeFromHentaiList(groupeJid) {
+// Function to remove a group from the unknown groups list
+async function removeFromUnknownGroupsList(groupJid) {
   try {
-    const data = loadHentaiData();
+    const data = loadUnknownGroupsData();
     
-    if (data[groupeJid]) {
-      delete data[groupeJid];
-      saveHentaiData(data);
-      console.log(`Group JID ${groupeJid} has been removed from the hentai list.`);
+    if (data[groupJid]) {
+      delete data[groupJid];
+      saveUnknownGroupsData(data);
+      console.log(`Group JID ${groupJid} has been removed from the unknown groups list.`);
     } else {
-      console.log(`Group JID ${groupeJid} is not in the hentai list.`);
+      console.log(`Group JID ${groupJid} is not in the unknown groups list.`);
     }
   } catch (error) {
-    console.error("Error while removing the group from the hentai list:", error);
+    console.error("Error while removing the group from the unknown groups list:", error);
   }
 }
 
 module.exports = {
-  addToHentaiList,
-  checkFromHentaiList,
-  removeFromHentaiList,
+  addToUnknownGroupsList,
+  checkFromUnknownGroupsList,
+  removeFromUnknownGroupsList,
 };
