@@ -10,8 +10,7 @@ function readDataFromFile() {
     const data = fs.readFileSync(dataFilePath, 'utf-8');
     return JSON.parse(data);
   } catch (error) {
-    // If file doesn't exist or there's a read error, return an empty object
-    console.error('Error reading data from file:', error);
+    console.error('❌ [DE UNKNOWN] Error reading antibot data:', error);
     return {};
   }
 }
@@ -21,7 +20,7 @@ function writeDataToFile(data) {
   try {
     fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2), 'utf-8');
   } catch (error) {
-    console.error('Error writing data to file:', error);
+    console.error('❌ [DE UNKNOWN] Error writing antibot data:', error);
   }
 }
 
@@ -29,6 +28,7 @@ function writeDataToFile(data) {
 function initializeDataFile() {
   if (!fs.existsSync(dataFilePath)) {
     writeDataToFile({});
+    console.log("✅ [DE UNKNOWN] antibot.json initialized.");
   }
 }
 
@@ -38,43 +38,35 @@ initializeDataFile();
 // Function to add or update a JID with a given state
 function addOrUpdateJidState(jid, etat) {
   const data = readDataFromFile();
-  
-  // Add or update the JID entry
   data[jid] = data[jid] || {};
   data[jid].etat = etat;
-  data[jid].action = data[jid].action || 'supp'; // Default action is 'supp' if not present
-
-  // Write updated data back to file
+  data[jid].action = data[jid].action || 'supp';
   writeDataToFile(data);
 
-  console.log(`JID ${jid} successfully added or updated.`);
+  console.log(`✅ [DE UNKNOWN] JID ${jid} added/updated with state: ${etat}`);
 }
 
 // Function to update the action for a given JID
 function updateJidAction(jid, action) {
   const data = readDataFromFile();
-  
-  // Add or update the JID's action
   data[jid] = data[jid] || {};
-  data[jid].etat = data[jid].etat || 'non'; // Default state is 'non' if not present
+  data[jid].etat = data[jid].etat || 'non';
   data[jid].action = action;
-
-  // Write updated data back to file
   writeDataToFile(data);
 
-  console.log(`Action successfully updated for JID ${jid}.`);
+  console.log(`✅ [DE UNKNOWN] Action updated for JID ${jid}: ${action}`);
 }
 
 // Function to verify the state of a JID
 function checkJidState(jid) {
   const data = readDataFromFile();
-  return data[jid]?.etat === 'oui'; // Return true if 'etat' is 'oui', false otherwise
+  return data[jid]?.etat === 'oui';
 }
 
 // Function to retrieve the action of a JID
 function getJidAction(jid) {
   const data = readDataFromFile();
-  return data[jid]?.action || 'supp'; // Default action is 'supp' if not present
+  return data[jid]?.action || 'supp';
 }
 
 // Export the functions for external use
